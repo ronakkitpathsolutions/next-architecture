@@ -1,0 +1,7 @@
+{
+  "cSpell.words": ["unrs"],
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.requireConfig": true,
+  "i18n-ally.localesPaths": ["public/locales", "src/i18n"]
+}
