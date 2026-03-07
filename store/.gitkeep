@@ -1,0 +1,2 @@
+// This directory contains global Zustand stores.
+// Each store should be modular and focused on a single concern.
