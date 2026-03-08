@@ -19,6 +19,12 @@ const commitlintConfig = {
       ],
     ],
 
+    // allow any case in subject
+    'subject-case': [0],
+
+    // allow trailing full stop in subject
+    'subject-full-stop': [0],
+
     // increase header max length
     'header-max-length': [2, 'always', 1500],
   },

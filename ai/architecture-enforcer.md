@@ -19,7 +19,7 @@ UI Layer → Container Layer → Business Logic Layer
 Location:
 
 ```text
-components/
+src/components/
 ```
 
 Responsibilities:
@@ -44,7 +44,7 @@ UI components must remain **pure presentational components**.
 Location:
 
 ```text
-containers/
+src/containers/
 ```
 
 Responsibilities:
@@ -71,8 +71,8 @@ Containers must NOT:
 Business logic must live inside:
 
 ```text
-hooks/
-store/
+src/hooks/
+src/store/
 ```
 
 Examples:
@@ -91,7 +91,7 @@ Business logic must **never live inside JSX components**.
 All networking must follow the **two-layer services pattern**.
 
 ```text
-services/
+src/services/
  ├ client.ts
  └ api.ts
 ```
@@ -128,14 +128,15 @@ Rules:
 
 ```text
 root
- ├ app
- ├ components
- ├ containers
- ├ hooks
- ├ services
- ├ store
- ├ types
- └ utils
+ └ src
+     ├ app
+     ├ components
+     ├ containers
+     ├ hooks
+     ├ services
+     ├ store
+     ├ types
+     └ utils
 ```
 
 Rules:

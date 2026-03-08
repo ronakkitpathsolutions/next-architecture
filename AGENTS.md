@@ -17,10 +17,10 @@ Before generating, reviewing, or modifying any code, you **MUST** read and follo
 ## Key Architectural Constraints
 
 - **Three-layer architecture**: UI → Container → Business Logic
-- **UI components** (`components/`) must be pure presentational — no API calls, no business logic, no store access
-- **Containers** (`containers/`) coordinate screens and connect hooks to UI
-- **Business logic** lives in `hooks/` and `store/` only
-- **API layer** uses a two-file pattern: `services/client.ts` (Axios instance) + `services/api.ts` (typed endpoints)
+- **UI components** (`src/components/`) must be pure presentational — no API calls, no business logic, no store access
+- **Containers** (`src/containers/`) coordinate screens and connect hooks to UI
+- **Business logic** lives in `src/hooks/` and `src/store/` only
+- **API layer** uses a two-file pattern: `src/services/client.ts` (Axios instance) + `src/services/api.ts` (typed endpoints)
 - **TypeScript strict mode** — `any` is forbidden, use `unknown` instead
 - **Files** must use kebab-case naming
 
@@ -34,4 +34,4 @@ Before generating, reviewing, or modifying any code, you **MUST** read and follo
 
 ## Path Aliases
 
-The project uses `@/*` mapping to the project root (no `src/` directory).
+The project uses `@/*` mapping to `src/*`.

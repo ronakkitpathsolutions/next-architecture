@@ -49,7 +49,7 @@ Forbidden patterns:
 Allowed structure:
 
 ```text
-services/
+src/services/
   client.ts
   api.ts
 ```

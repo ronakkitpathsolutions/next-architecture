@@ -15,14 +15,14 @@ export default defineConfig({
       exclude: [
         'node_modules/',
         '.next/',
-        'app/**/layout.tsx',
-        'app/**/loading.tsx',
+        'src/app/**/layout.tsx',
+        'src/app/**/loading.tsx',
       ],
     },
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
 });

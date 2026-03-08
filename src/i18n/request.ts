@@ -13,10 +13,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
   // Load common and translation namespaces from the public folder
   const [common, translation] = await Promise.all([
-    import(`../public/locales/${locale}/common.json`)
+    import(`../../public/locales/${locale}/common.json`)
       .then((m) => m.default)
       .catch(() => ({})),
-    import(`../public/locales/${locale}/translation.json`)
+    import(`../../public/locales/${locale}/translation.json`)
       .then((m) => m.default)
       .catch(() => ({})),
   ]);

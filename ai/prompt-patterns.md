@@ -11,25 +11,25 @@ When implementing a new feature, follow this order.
 1. API endpoints
 
 ```text
-services/api.ts
+src/services/api.ts
 ```
 
 2. Business logic hook
 
 ```text
-hooks/use-feature-name.ts
+src/hooks/use-feature-name.ts
 ```
 
 3. Container
 
 ```text
-containers/feature-container.tsx
+src/containers/feature-container.tsx
 ```
 
 4. UI component
 
 ```text
-components/feature-ui.tsx
+src/components/feature-ui.tsx
 ```
 
 ---
@@ -45,7 +45,7 @@ Containers should:
 Example structure:
 
 ```text
-containers/user-list-container.tsx
+src/containers/user-list-container.tsx
 ```
 
 Responsibilities:
@@ -87,7 +87,7 @@ UI components should:
 Example:
 
 ```text
-components/user-table.tsx
+src/components/user-table.tsx
 ```
 
 Props example:

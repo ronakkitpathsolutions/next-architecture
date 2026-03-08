@@ -87,7 +87,7 @@ The application must follow **strict separation of concerns**.
 
 ## UI Layer
 
-Location: `/components`
+Location: `src/components`
 
 Responsibilities:
 
@@ -106,7 +106,7 @@ Restrictions:
 
 ## Container Layer
 
-Location: `/containers`
+Location: `src/containers`
 
 Responsibilities:
 
@@ -145,24 +145,25 @@ All code must follow this structure:
 
 ```text
 root
- ├ app
- ├ assets
- ├ components
- │   └ ui
- ├ containers
- ├ integrations
- ├ shared
- ├ hooks
- ├ services
- ├ store
- ├ types
- └ utils
+ └ src
+     ├ app
+     ├ assets
+     ├ components
+     │   └ ui
+     ├ containers
+     ├ integrations
+     ├ shared
+     ├ hooks
+     ├ services
+     ├ store
+     ├ types
+     └ utils
 ```
 
 Rules:
 
 - Each folder must have a single responsibility
-- No API calls inside `/components`
+- No API calls inside `src/components`
 - No business logic inside pages
 - Containers coordinate screens
 
@@ -203,7 +204,7 @@ All networking must follow a **two-layer API architecture**.
 File:
 
 ```text
-services/client.ts
+src/services/client.ts
 ```
 
 Responsibilities:
@@ -227,7 +228,7 @@ Rules:
 File:
 
 ```text
-services/api.ts
+src/services/api.ts
 ```
 
 Responsibilities:
@@ -255,7 +256,7 @@ Server State → TanStack Query
 
 Rules:
 
-- `/store` must contain only global stores
+- `src/store` must contain only global stores
 - Feature-specific state must not live in global stores
 - Stores must be modular and independent
 

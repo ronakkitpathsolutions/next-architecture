@@ -8,30 +8,30 @@ Follow these steps in order when creating a new feature.
 
 ## 1. Define Types
 
-Create or update type definitions in `types/`:
+Create or update type definitions in `src/types/`:
 
 ```text
-types/feature-name.ts
+src/types/feature-name.ts
 ```
 
 Define request, response, and domain model interfaces.
 
 ## 2. Create API Endpoints
 
-Add typed API functions in `services/api.ts` using the central client:
+Add typed API functions in `src/services/api.ts` using the central client:
 
 ```text
-services/api.ts
+src/services/api.ts
 ```
 
-Do NOT use `fetch` or `axios` directly — always go through `services/client.ts`.
+Do NOT use `fetch` or `axios` directly — always go through `src/services/client.ts`.
 
 ## 3. Create Business Logic Hook
 
-Create a custom hook in `hooks/`:
+Create a custom hook in `src/hooks/`:
 
 ```text
-hooks/use-feature-name.ts
+src/hooks/use-feature-name.ts
 ```
 
 The hook should:
@@ -43,10 +43,10 @@ The hook should:
 
 ## 4. Create Container
 
-Create a container component in `containers/`:
+Create a container component in `src/containers/`:
 
 ```text
-containers/feature-name-container.tsx
+src/containers/feature-name-container.tsx
 ```
 
 The container should:
@@ -57,10 +57,10 @@ The container should:
 
 ## 5. Create UI Component
 
-Create a presentational component in `components/`:
+Create a presentational component in `src/components/`:
 
 ```text
-components/feature-name.tsx
+src/components/feature-name.tsx
 ```
 
 The UI component should:
@@ -72,10 +72,10 @@ The UI component should:
 
 ## 6. Wire to Page
 
-Add the container to a page in `app/`:
+Add the container to a page in `src/app/`:
 
 ```text
-app/feature-name/page.tsx
+src/app/feature-name/page.tsx
 ```
 
 Pages must only render containers. No business logic in pages.
