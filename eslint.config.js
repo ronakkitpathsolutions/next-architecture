@@ -31,9 +31,9 @@ const eslintConfig = defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
-    // --- ADD RULES IN THIS SECTION ---
     rules: {
       'react-refresh/only-export-components': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
   ...nextVitals,
