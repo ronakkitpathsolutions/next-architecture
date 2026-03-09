@@ -33,7 +33,6 @@ const eslintConfig = defineConfig([
     },
     rules: {
       'react-refresh/only-export-components': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
   ...nextVitals,
