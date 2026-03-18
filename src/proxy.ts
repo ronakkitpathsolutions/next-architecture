@@ -1,98 +1,105 @@
 import createMiddleware from 'next-intl/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
+import { auth } from '@/auth';
 import { routing } from '@/i18n/routing';
-import { isAuthenticated } from '@/utils/functions/auth';
 import {
+  isPublicRoute,
   isAuthRoute,
   isProtectedRoute,
   DEFAULT_AUTH_REDIRECT,
   DEFAULT_LOGIN_REDIRECT,
 } from '@/utils/constants/routes';
+const handleI18nRouting = createMiddleware(routing);
 
-// ---------------------------------------------------------------------------
-// next-intl locale middleware
-// ---------------------------------------------------------------------------
-const intlMiddleware = createMiddleware(routing);
+const getLocaleFromPathname = (pathname: string): string => {
+  const firstSegment = pathname.split('/')[1];
 
-// ---------------------------------------------------------------------------
-// Supported locale prefixes — used to strip locale from pathname
-// ---------------------------------------------------------------------------
-const LOCALE_PREFIX_RE = new RegExp(`^/(${routing.locales.join('|')})(?=/|$)`);
-
-/**
- * Strip the locale prefix from a pathname so it can be matched against the
- * route arrays which store paths without locale prefixes.
- */
-const stripLocale = (pathname: string): string => {
-  const stripped = pathname.replace(LOCALE_PREFIX_RE, '');
-  return stripped === '' ? '/' : stripped;
-};
-
-/**
- * Detect the preferred locale from the request.
- * Falls back to the default locale defined in routing config.
- */
-const getLocaleFromRequest = (request: NextRequest): string => {
-  const match = request.nextUrl.pathname.match(LOCALE_PREFIX_RE);
-  if (match) return match[1];
-
-  // Let next-intl middleware compute the actual locale based on headers,
-  // but for quick redirects we can default to English if not present in URL
-  const acceptLanguage = request.headers.get('accept-language');
-  if (acceptLanguage) {
-    const preferredLocale = acceptLanguage.split(',')[0].split('-')[0];
-    if (routing.locales.includes(preferredLocale as 'fr' | 'en' | 'ar')) {
-      return preferredLocale;
-    }
+  if (
+    routing.locales.includes(firstSegment as (typeof routing.locales)[number])
+  ) {
+    return firstSegment;
   }
+
   return routing.defaultLocale;
 };
 
-// ---------------------------------------------------------------------------
-// Main middleware
-// ---------------------------------------------------------------------------
+const stripLocaleFromPathname = (pathname: string): string => {
+  const segments = pathname.split('/').filter(Boolean);
 
-export default function middleware(request: NextRequest): NextResponse {
-  const { pathname } = request.nextUrl;
-  const pathWithoutLocale = stripLocale(pathname);
-  const authenticated = isAuthenticated(request);
+  if (segments.length === 0) {
+    return '/';
+  }
 
-  // -----------------------------------------------------------------------
-  // 1. Auth routes — redirect authenticated users to dashboard
-  // -----------------------------------------------------------------------
+  const [firstSegment, ...rest] = segments;
+
+  if (
+    routing.locales.includes(firstSegment as (typeof routing.locales)[number])
+  ) {
+    if (rest.length === 0) {
+      return '/';
+    }
+
+    return `/${rest.join('/')}`;
+  }
+
+  return pathname;
+};
+
+const getI18nResolvedPathname = (
+  request: NextRequest,
+  response: NextResponse,
+): string => {
+  const rewrittenPath = response.headers.get('x-middleware-rewrite');
+
+  if (rewrittenPath) {
+    return new URL(rewrittenPath).pathname;
+  }
+
+  const redirectPath = response.headers.get('location');
+
+  if (redirectPath) {
+    return new URL(redirectPath, request.url).pathname;
+  }
+
+  return request.nextUrl.pathname;
+};
+
+export const proxy = auth((request) => {
+  const i18nResponse = handleI18nRouting(request);
+  const pathname = getI18nResolvedPathname(request, i18nResponse);
+  const locale = getLocaleFromPathname(pathname);
+  const pathWithoutLocale = stripLocaleFromPathname(pathname);
+  const authenticated = Boolean(request.auth);
+
   if (isAuthRoute(pathWithoutLocale)) {
     if (authenticated) {
-      const locale = getLocaleFromRequest(request);
       const url = request.nextUrl.clone();
       url.pathname = `/${locale}${DEFAULT_AUTH_REDIRECT}`;
       return NextResponse.redirect(url);
     }
 
-    // Unauthenticated users allowed; proceed to next-intl middleware
-    return intlMiddleware(request);
+    return i18nResponse;
   }
 
-  // -----------------------------------------------------------------------
-  // 2. Protected routes — redirect unauthenticated users to login
-  // -----------------------------------------------------------------------
-  if (isProtectedRoute(pathWithoutLocale)) {
-    if (!authenticated) {
-      const locale = getLocaleFromRequest(request);
-      const url = request.nextUrl.clone();
-      url.pathname = `/${locale}${DEFAULT_LOGIN_REDIRECT}`;
-      return NextResponse.redirect(url);
-    }
+  if (isProtectedRoute(pathWithoutLocale) && !authenticated) {
+    const callbackUrl = `${pathname}${request.nextUrl.search}`;
+    const loginUrl = new URL(
+      `/${locale}${DEFAULT_LOGIN_REDIRECT}`,
+      request.url,
+    );
+    loginUrl.searchParams.set('callbackUrl', callbackUrl);
+
+    return NextResponse.redirect(loginUrl);
   }
 
-  // -----------------------------------------------------------------------
-  // 3. Delegate to next-intl middleware for locale negotiation
-  // -----------------------------------------------------------------------
-  return intlMiddleware(request);
-}
+  if (isPublicRoute(pathWithoutLocale)) {
+    return i18nResponse;
+  }
 
-// ---------------------------------------------------------------------------
-// Matcher
-// ---------------------------------------------------------------------------
+  return i18nResponse;
+});
+
 export const config = {
-  matcher: ['/', '/(ar|en|fr)/:path*', '/((?!api|_next|_vercel|.*\\..*).*)'],
+  // Match only internationalized pathnames
+  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
 };
