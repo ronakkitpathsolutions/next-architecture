@@ -79,6 +79,9 @@
     "unrs-resolver"
   ],
   "trustedDependencies": [
+    "@parcel/watcher",
+    "@swc/core",
+    "msw",
     "sharp",
     "unrs-resolver"
   ]
