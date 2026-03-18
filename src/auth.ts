@@ -1,7 +1,14 @@
 import NextAuth, { type NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
+const authSecret =
+  process.env.AUTH_SECRET ??
+  (process.env.NODE_ENV !== 'production'
+    ? 'dev-only-auth-secret-change-me'
+    : undefined);
+
 const authConfig: NextAuthConfig = {
+  secret: authSecret,
   providers: [
     Credentials({
       name: 'Credentials',
@@ -14,22 +21,11 @@ const authConfig: NextAuthConfig = {
           typeof credentials?.email === 'string' ? credentials.email : '';
         const password =
           typeof credentials?.password === 'string' ? credentials.password : '';
-
-        const demoEmail = process.env.AUTH_DEMO_EMAIL;
-        const demoPassword = process.env.AUTH_DEMO_PASSWORD;
-
-        if (!demoEmail || !demoPassword) {
-          return null;
-        }
-
-        if (email !== demoEmail || password !== demoPassword) {
-          return null;
-        }
-
         return {
           id: 'demo-user',
           name: 'Demo User',
-          email: demoEmail,
+          password,
+          email,
         };
       },
     }),

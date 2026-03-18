@@ -69,7 +69,10 @@ export const proxy = auth((request) => {
   const pathname = getI18nResolvedPathname(request, i18nResponse);
   const locale = getLocaleFromPathname(pathname);
   const pathWithoutLocale = stripLocaleFromPathname(pathname);
-  const authenticated = Boolean(request.auth);
+  const authenticated = Boolean(
+    request.auth?.user &&
+    (request.auth.user.email || request.auth.user.name || request.auth.user.id),
+  );
 
   if (isAuthRoute(pathWithoutLocale)) {
     if (authenticated) {
